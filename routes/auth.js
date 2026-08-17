@@ -21,10 +21,16 @@ router.post('/login', async (req, res) => {
     const user = await usersService.authenticateUser(email, password);
 
     if (!user) {
-      return res.status(401).json({
-        message: 'Adresse email ou mot de passe incorrect.'
-      });
-    }
+        if (req.is('application/x-www-form-urlencoded')) {
+            return res.status(401).render('index', {
+                error: 'Adresse email ou mot de passe incorrect.'
+            });
+        }
+
+  return res.status(401).json({
+    message: 'Adresse email ou mot de passe incorrect.'
+  });
+}
 
     const token = jwt.sign(
       {
@@ -46,6 +52,10 @@ router.post('/login', async (req, res) => {
     });
 
     res.set('Authorization', `Bearer ${token}`);
+
+    if (req.is('application/x-www-form-urlencoded')) {
+        return res.redirect('/dashboard');
+}
 
     return res.status(200).json({
       message: 'Connexion réussie.',

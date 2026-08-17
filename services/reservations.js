@@ -75,3 +75,17 @@ exports.deleteReservation = async (catwayNumber, reservationId) =>
     _id: reservationId,
     catwayNumber
   });
+  /**
+ * Récupère les réservations actuellement en cours.
+ * @returns {Promise<Array>}
+ */
+exports.getCurrentReservations = async () => {
+  const reservations = await Reservation.find();
+  const currentDate = new Date();
+
+  return reservations.filter(
+    (reservation) =>
+      reservation.startDate <= currentDate &&
+      reservation.endDate >= currentDate
+  );
+};

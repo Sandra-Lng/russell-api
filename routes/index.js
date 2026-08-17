@@ -1,9 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+const router = express.Router();
+
+/**
+ * GET /
+ * Affiche la page d’accueil et le formulaire de connexion.
+ */
+router.get('/', (req, res) => {
+  return res.render('index', {
+    error: null
+  });
 });
 
 module.exports = router;

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Port de plaisance Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <main class="home">
+    <section class="presentation">
+      <p class="eyebrow">Capitainerie</p>
+      <h1>Port de plaisance Russel</h1>
+
+      <p>
+        Bienvenue sur l’application de gestion des catways et de leurs
+        réservations.
+      </p>
+
+      <a class="documentation-link" href="/api-docs">
+        Consulter la documentation de l’API
+      </a>
+    </section>
+
+    <section class="login-card">
+      <h2>Connexion</h2>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <p class="error-message"><%= error %></p>
+      <% } %>
+
+      <form action="/login" method="post">
+        <label for="email">Adresse email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+        >
+
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
