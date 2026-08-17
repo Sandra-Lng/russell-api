@@ -8,6 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catwaysRouter = require('./routes/catways');
+var reservationsRouter = require('./routes/reservations');
 var mongodb = require('./db/mongo');
 
 mongodb.initClientDbConnection();
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catways/:id/reservations', reservationsRouter);
 app.use('/catways', catwaysRouter);
 
 module.exports = app;
