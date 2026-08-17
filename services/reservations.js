@@ -89,3 +89,9 @@ exports.getCurrentReservations = async () => {
       reservation.endDate >= currentDate
   );
 };
+/**
+ * Récupère toutes les réservations.
+ * @returns {Promise<Array>}
+ */
+exports.getAllReservations = async () =>
+  Reservation.find().sort({ startDate: 1 });

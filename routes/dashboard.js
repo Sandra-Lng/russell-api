@@ -98,4 +98,86 @@ router.post('/catways/:id/delete', async (req, res) => {
   }
 });
 
+/**
+ * GET /dashboard/reservations
+ * Affiche la page de gestion des réservations.
+ */
+router.get('/reservations', async (req, res) => {
+  try {
+    const [reservations, catways] = await Promise.all([
+      reservationsService.getAllReservations(),
+      catwaysService.getAllCatways()
+    ]);
+
+    return res.render('reservations', {
+      user: req.user,
+      reservations,
+      catways,
+      error: req.query.error || null
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur interne du serveur.'
+    });
+  }
+});
+
+/**
+ * POST /dashboard/reservations
+ * Crée une réservation depuis l’interface.
+ */
+router.post('/reservations', async (req, res) => {
+  try {
+    await reservationsService.createReservation(
+      Number(req.body.catwayNumber),
+      req.body
+    );
+
+    return res.redirect('/dashboard/reservations');
+  } catch (error) {
+    return res.redirect(
+      `/dashboard/reservations?error=${encodeURIComponent(error.message)}`
+    );
+  }
+});
+
+/**
+ * POST /dashboard/reservations/:id/update
+ * Modifie une réservation depuis l’interface.
+ */
+router.post('/reservations/:id/update', async (req, res) => {
+  try {
+    await reservationsService.updateReservation(
+      Number(req.body.catwayNumber),
+      req.params.id,
+      req.body
+    );
+
+    return res.redirect('/dashboard/reservations');
+  } catch (error) {
+    return res.redirect(
+      `/dashboard/reservations?error=${encodeURIComponent(error.message)}`
+    );
+  }
+});
+
+/**
+ * POST /dashboard/reservations/:id/delete
+ * Supprime une réservation depuis l’interface.
+ */
+router.post('/reservations/:id/delete', async (req, res) => {
+  try {
+    await reservationsService.deleteReservation(
+      Number(req.body.catwayNumber),
+      req.params.id
+    );
+
+    return res.redirect('/dashboard/reservations');
+  } catch (error) {
+    return res.redirect(
+      `/dashboard/reservations?error=${encodeURIComponent(error.message)}`
+    );
+  }
+});
+
 module.exports = router;

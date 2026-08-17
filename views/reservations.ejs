@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des réservations – Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <%
+    function toLocalDateTime(date) {
+      const pad = (value) => String(value).padStart(2, '0');
+
+      return [
+        date.getFullYear(),
+        '-',
+        pad(date.getMonth() + 1),
+        '-',
+        pad(date.getDate()),
+        'T',
+        pad(date.getHours()),
+        ':',
+        pad(date.getMinutes())
+      ].join('');
+    }
+  %>
+
+  <header class="main-header">
+    <a class="brand" href="/dashboard">Port Russel</a>
+
+    <nav>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/dashboard/catways">Catways</a>
+      <a href="/dashboard/reservations">Réservations</a>
+      <a href="/dashboard/users">Utilisateurs</a>
+      <a class="logout-link" href="/logout">Déconnexion</a>
+    </nav>
+  </header>
+
+  <main class="management-page">
+    <section class="page-heading">
+      <div>
+        <p class="eyebrow">Gestion</p>
+        <h1>Réservations</h1>
+        <p>Créer, consulter, modifier et supprimer les réservations.</p>
+      </div>
+
+      <a href="/dashboard">Retour au tableau de bord</a>
+    </section>
+
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+
+    <section class="management-card">
+      <h2>Ajouter une réservation</h2>
+
+      <form
+        class="reservation-create-form"
+        action="/dashboard/reservations"
+        method="post"
+      >
+        <label>
+          Catway
+          <select name="catwayNumber" required>
+            <option value="">Choisir un catway</option>
+
+            <% catways.forEach((catway) => { %>
+              <option value="<%= catway.catwayNumber %>">
+                Catway <%= catway.catwayNumber %>
+              </option>
+            <% }); %>
+          </select>
+        </label>
+
+        <label>
+          Nom du client
+          <input
+            name="clientName"
+            type="text"
+            required
+          >
+        </label>
+
+        <label>
+          Nom du bateau
+          <input
+            name="boatName"
+            type="text"
+            required
+          >
+        </label>
+
+        <label>
+          Date de début
+          <input
+            name="startDate"
+            type="datetime-local"
+            required
+          >
+        </label>
+
+        <label>
+          Date de fin
+          <input
+            name="endDate"
+            type="datetime-local"
+            required
+          >
+        </label>
+
+        <button type="submit">
+          Ajouter la réservation
+        </button>
+      </form>
+    </section>
+
+    <section class="management-card">
+      <div class="section-heading">
+        <h2>Liste des réservations</h2>
+        <span><%= reservations.length %> réservation(s)</span>
+      </div>
+
+      <div class="reservation-list">
+        <% reservations.forEach((reservation) => { %>
+          <article class="reservation-item">
+            <div class="reservation-summary">
+              <span>Catway <%= reservation.catwayNumber %></span>
+              <strong><%= reservation.clientName %></strong>
+              <span><%= reservation.boatName %></span>
+            </div>
+
+            <form
+              class="reservation-edit-form"
+              action="/dashboard/reservations/<%= reservation._id %>/update"
+              method="post"
+            >
+              <input
+                name="catwayNumber"
+                type="hidden"
+                value="<%= reservation.catwayNumber %>"
+              >
+
+              <label>
+                Client
+                <input
+                  name="clientName"
+                  type="text"
+                  value="<%= reservation.clientName %>"
+                  required
+                >
+              </label>
+
+              <label>
+                Bateau
+                <input
+                  name="boatName"
+                  type="text"
+                  value="<%= reservation.boatName %>"
+                  required
+                >
+              </label>
+
+              <label>
+                Début
+                <input
+                  name="startDate"
+                  type="datetime-local"
+                  value="<%= toLocalDateTime(reservation.startDate) %>"
+                  required
+                >
+              </label>
+
+              <label>
+                Fin
+                <input
+                  name="endDate"
+                  type="datetime-local"
+                  value="<%= toLocalDateTime(reservation.endDate) %>"
+                  required
+                >
+              </label>
+
+              <button type="submit">
+                Modifier
+              </button>
+            </form>
+
+            <form
+              action="/dashboard/reservations/<%= reservation._id %>/delete"
+              method="post"
+              onsubmit="return confirm('Supprimer cette réservation ?');"
+            >
+              <input
+                name="catwayNumber"
+                type="hidden"
+                value="<%= reservation.catwayNumber %>"
+              >
+
+              <button
+                class="danger-button"
+                type="submit"
+              >
+                Supprimer
+              </button>
+            </form>
+          </article>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
