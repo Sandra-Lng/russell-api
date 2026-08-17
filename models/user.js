@@ -31,6 +31,15 @@ const userSchema = new Schema({
 });
 
 /**
+ * Retire le mot de passe lors de la conversion en JSON.
+ */
+userSchema.set('toJSON', {
+  transform(document, returnedObject) {
+    delete returnedObject.password;
+    return returnedObject;
+  }
+});
+/**
  * Hache le mot de passe avant son enregistrement.
  */
 userSchema.pre('save', async function hashPassword() {

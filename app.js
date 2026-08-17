@@ -9,6 +9,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catwaysRouter = require('./routes/catways');
 var reservationsRouter = require('./routes/reservations');
+var authRouter = require('./routes/auth');
+var checkJWT = require('./middlewares/checkJWT');
 var mongodb = require('./db/mongo');
 
 mongodb.initClientDbConnection();
@@ -22,8 +24,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/catways/:id/reservations', reservationsRouter);
-app.use('/catways', catwaysRouter);
+app.use('/', authRouter);
+
+app.use('/users', checkJWT, usersRouter);
+app.use(
+  '/catways/:id/reservations',
+  checkJWT,
+  reservationsRouter
+);
+app.use('/catways', checkJWT, catwaysRouter);
 
 module.exports = app;
