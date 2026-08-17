@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des catways – Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <header class="main-header">
+    <a class="brand" href="/dashboard">Port Russel</a>
+
+    <nav>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/dashboard/catways">Catways</a>
+      <a href="/dashboard/reservations">Réservations</a>
+      <a href="/dashboard/users">Utilisateurs</a>
+      <a class="logout-link" href="/logout">Déconnexion</a>
+    </nav>
+  </header>
+
+  <main class="management-page">
+    <section class="page-heading">
+      <div>
+        <p class="eyebrow">Gestion</p>
+        <h1>Catways</h1>
+        <p>Créer, consulter, modifier et supprimer les emplacements.</p>
+      </div>
+
+      <a href="/dashboard">Retour au tableau de bord</a>
+    </section>
+
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+
+    <section class="management-card">
+      <h2>Ajouter un catway</h2>
+
+      <form
+        class="create-form"
+        action="/dashboard/catways"
+        method="post"
+      >
+        <label>
+          Numéro
+          <input
+            name="catwayNumber"
+            type="number"
+            min="1"
+            required
+          >
+        </label>
+
+        <label>
+          Type
+          <select name="catwayType" required>
+            <option value="">Choisir un type</option>
+            <option value="short">Court</option>
+            <option value="long">Long</option>
+          </select>
+        </label>
+
+        <label>
+          État
+          <input
+            name="catwayState"
+            type="text"
+            required
+          >
+        </label>
+
+        <button type="submit">Ajouter le catway</button>
+      </form>
+    </section>
+
+    <section class="management-card">
+      <div class="section-heading">
+        <h2>Liste des catways</h2>
+        <span><%= catways.length %> emplacement(s)</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Numéro</th>
+              <th>Type</th>
+              <th>État</th>
+              <th>Modification</th>
+              <th>Suppression</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% catways.forEach((catway) => { %>
+              <tr>
+                <td><strong><%= catway.catwayNumber %></strong></td>
+                <td>
+                  <%= catway.catwayType === 'short' ? 'Court' : 'Long' %>
+                </td>
+                <td><%= catway.catwayState %></td>
+
+                <td>
+                  <form
+                    class="inline-form"
+                    action="/dashboard/catways/<%= catway.catwayNumber %>/update"
+                    method="post"
+                  >
+                    <input
+                      name="catwayState"
+                      type="text"
+                      value="<%= catway.catwayState %>"
+                      aria-label="Nouvel état du catway <%= catway.catwayNumber %>"
+                      required
+                    >
+                    <button type="submit">Modifier</button>
+                  </form>
+                </td>
+
+                <td>
+                  <form
+                    action="/dashboard/catways/<%= catway.catwayNumber %>/delete"
+                    method="post"
+                    onsubmit="return confirm('Supprimer ce catway ?');"
+                  >
+                    <button class="danger-button" type="submit">
+                      Supprimer
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
