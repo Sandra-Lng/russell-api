@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const clientOptions = {
-  dbName: 'russell'
+  dbName: 'russel'
 };
 
 exports.initClientDbConnection = async () => {
