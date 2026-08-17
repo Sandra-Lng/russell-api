@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des utilisateurs – Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <header class="main-header">
+    <a class="brand" href="/dashboard">Port Russel</a>
+
+    <nav>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/dashboard/catways">Catways</a>
+      <a href="/dashboard/reservations">Réservations</a>
+      <a href="/dashboard/users">Utilisateurs</a>
+      <a class="logout-link" href="/logout">Déconnexion</a>
+    </nav>
+  </header>
+
+  <main class="management-page">
+    <section class="page-heading">
+      <div>
+        <p class="eyebrow">Gestion</p>
+        <h1>Utilisateurs</h1>
+        <p>Créer, consulter, modifier et supprimer les comptes.</p>
+      </div>
+
+      <a href="/dashboard">Retour au tableau de bord</a>
+    </section>
+
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+
+    <section class="management-card">
+      <h2>Ajouter un utilisateur</h2>
+
+      <form
+        class="user-create-form"
+        action="/dashboard/users"
+        method="post"
+      >
+        <label>
+          Nom d’utilisateur
+          <input
+            name="username"
+            type="text"
+            minlength="2"
+            required
+          >
+        </label>
+
+        <label>
+          Adresse email
+          <input
+            name="email"
+            type="email"
+            required
+          >
+        </label>
+
+        <label>
+          Mot de passe
+          <input
+            name="password"
+            type="password"
+            minlength="8"
+            required
+          >
+        </label>
+
+        <button type="submit">
+          Ajouter l’utilisateur
+        </button>
+      </form>
+    </section>
+
+    <section class="management-card">
+      <div class="section-heading">
+        <h2>Liste des utilisateurs</h2>
+        <span><%= users.length %> utilisateur(s)</span>
+      </div>
+
+      <div class="user-list">
+        <% users.forEach((user) => { %>
+          <article class="user-item">
+            <div class="user-summary">
+              <strong><%= user.username %></strong>
+              <span><%= user.email %></span>
+
+              <% if (user.email === currentUser.email) { %>
+                <small>Compte actuellement connecté</small>
+              <% } %>
+            </div>
+
+            <form
+              class="user-edit-form"
+              action="/dashboard/users/<%= encodeURIComponent(user.email) %>/update"
+              method="post"
+            >
+              <label>
+                Nom
+                <input
+                  name="username"
+                  type="text"
+                  minlength="2"
+                  value="<%= user.username %>"
+                  required
+                >
+              </label>
+
+              <label>
+                Email
+                <input
+                  name="email"
+                  type="email"
+                  value="<%= user.email %>"
+                  required
+                >
+              </label>
+
+              <label>
+                Nouveau mot de passe
+                <input
+                  name="password"
+                  type="password"
+                  minlength="8"
+                  placeholder="Laisser vide pour ne pas changer"
+                >
+              </label>
+
+              <button type="submit">
+                Modifier
+              </button>
+            </form>
+
+            <% if (user.email !== currentUser.email) { %>
+              <form
+                action="/dashboard/users/<%= encodeURIComponent(user.email) %>/delete"
+                method="post"
+                onsubmit="return confirm('Supprimer cet utilisateur ?');"
+              >
+                <button class="danger-button" type="submit">
+                  Supprimer
+                </button>
+              </form>
+            <% } else { %>
+              <span class="protected-account">Compte protégé</span>
+            <% } %>
+          </article>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

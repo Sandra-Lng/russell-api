@@ -1,6 +1,7 @@
 const express = require('express');
 const reservationsService = require('../services/reservations');
 const catwaysService = require('../services/catways');
+const usersService = require('../services/users');
 
 const router = express.Router();
 
@@ -176,6 +177,90 @@ router.post('/reservations/:id/delete', async (req, res) => {
   } catch (error) {
     return res.redirect(
       `/dashboard/reservations?error=${encodeURIComponent(error.message)}`
+    );
+  }
+});
+
+/**
+ * GET /dashboard/users
+ * Affiche la page de gestion des utilisateurs.
+ */
+router.get('/users', async (req, res) => {
+  try {
+    const users = await usersService.getAllUsers();
+
+    return res.render('users', {
+      currentUser: req.user,
+      users,
+      error: req.query.error || null
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur interne du serveur.'
+    });
+  }
+});
+
+/**
+ * POST /dashboard/users
+ * Crée un utilisateur depuis l’interface.
+ */
+router.post('/users', async (req, res) => {
+  try {
+    await usersService.createUser(req.body);
+    return res.redirect('/dashboard/users');
+  } catch (error) {
+    const message =
+      error.code === 11000
+        ? 'Cette adresse email est déjà utilisée.'
+        : error.message;
+
+    return res.redirect(
+      `/dashboard/users?error=${encodeURIComponent(message)}`
+    );
+  }
+});
+
+/**
+ * POST /dashboard/users/:email/update
+ * Modifie un utilisateur depuis l’interface.
+ */
+router.post('/users/:email/update', async (req, res) => {
+  try {
+    await usersService.updateUser(req.params.email, req.body);
+    return res.redirect('/dashboard/users');
+  } catch (error) {
+    const message =
+      error.code === 11000
+        ? 'Cette adresse email est déjà utilisée.'
+        : error.message;
+
+    return res.redirect(
+      `/dashboard/users?error=${encodeURIComponent(message)}`
+    );
+  }
+});
+
+/**
+ * POST /dashboard/users/:email/delete
+ * Supprime un utilisateur depuis l’interface.
+ */
+router.post('/users/:email/delete', async (req, res) => {
+  try {
+    if (req.params.email === req.user.email) {
+      return res.redirect(
+        '/dashboard/users?error=' +
+        encodeURIComponent(
+          'Vous ne pouvez pas supprimer votre propre compte.'
+        )
+      );
+    }
+
+    await usersService.deleteUser(req.params.email);
+    return res.redirect('/dashboard/users');
+  } catch (error) {
+    return res.redirect(
+      `/dashboard/users?error=${encodeURIComponent(error.message)}`
     );
   }
 });
