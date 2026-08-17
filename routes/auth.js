@@ -79,6 +79,15 @@ router.post('/login', async (req, res) => {
  */
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
+
+  const browserExpectsHtml =
+    req.headers.accept &&
+    req.headers.accept.includes('text/html');
+
+  if (browserExpectsHtml) {
+    return res.redirect('/');
+  }
+
   return res.status(200).json({
     message: 'Déconnexion réussie.'
   });

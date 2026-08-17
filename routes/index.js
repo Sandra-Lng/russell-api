@@ -12,4 +12,12 @@ router.get('/', (req, res) => {
   });
 });
 
+/**
+ * GET /api-docs
+ * Affiche la documentation de l’API.
+ */
+router.get('/api-docs', (req, res) => {
+  return res.render('api-docs');
+});
+
 module.exports = router;

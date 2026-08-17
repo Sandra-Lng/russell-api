@@ -597,3 +597,134 @@ th {
     grid-template-columns: 1fr;
   }
 }
+.documentation-page {
+  width: min(1000px, calc(100% - 40px));
+  margin: 45px auto;
+}
+
+.documentation-intro,
+.documentation-section {
+  margin-bottom: 28px;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.documentation-intro h1 {
+  margin: 10px 0 18px;
+  color: var(--navy);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.documentation-intro > p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.documentation-intro dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.documentation-intro dl div {
+  padding: 15px;
+  border-radius: 10px;
+  background: var(--light-blue);
+}
+
+.documentation-intro dt {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.documentation-intro dd {
+  margin: 0;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.documentation-section h2 {
+  margin-top: 0;
+  color: var(--navy);
+  font-size: 1.8rem;
+}
+
+.endpoint-list {
+  display: grid;
+  gap: 15px;
+}
+
+.endpoint {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.endpoint-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.method {
+  min-width: 72px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  color: #fff;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.method.get {
+  background: #15803d;
+}
+
+.method.post {
+  background: #0369a1;
+}
+
+.method.put {
+  background: #b45309;
+}
+
+.method.delete {
+  background: #b91c1c;
+}
+
+code {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: #e8eef4;
+  font-family: Consolas, Monaco, monospace;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 18px;
+  border-radius: 10px;
+  color: #e2e8f0;
+  background: #0f172a;
+  line-height: 1.5;
+}
+
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+}
+
+@media (max-width: 750px) {
+  .documentation-intro dl {
+    grid-template-columns: 1fr;
+  }
+}

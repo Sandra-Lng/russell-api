@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation de l’API – Port Russel</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <header class="main-header">
+    <a class="brand" href="/">Port Russel</a>
+
+    <nav>
+      <a href="/">Accueil</a>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/api-docs">Documentation</a>
+    </nav>
+  </header>
+
+  <main class="documentation-page">
+    <section class="documentation-intro">
+      <p class="eyebrow">Documentation</p>
+      <h1>API du port de plaisance Russel</h1>
+
+      <p>
+        Cette API REST permet de gérer les catways, leurs réservations
+        et les utilisateurs de la capitainerie.
+      </p>
+
+      <dl>
+        <div>
+          <dt>Adresse locale</dt>
+          <dd><code>http://localhost:3000</code></dd>
+        </div>
+
+        <div>
+          <dt>Format des données</dt>
+          <dd><code>application/json</code></dd>
+        </div>
+
+        <div>
+          <dt>Authentification</dt>
+          <dd>JWT valable pendant 24 heures</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="documentation-section">
+      <h2>Authentification</h2>
+
+      <p>
+        Les routes de gestion sont privées. Le token peut être transmis
+        dans le cookie <code>token</code> ou dans le header :
+      </p>
+
+      <pre><code>Authorization: Bearer VOTRE_TOKEN</code></pre>
+
+      <div class="endpoint">
+        <div class="endpoint-title">
+          <span class="method post">POST</span>
+          <code>/login</code>
+        </div>
+
+        <p>Connecte un utilisateur et génère un token JWT.</p>
+
+        <h3>Corps de la requête</h3>
+
+        <pre><code>{
+  "email": "admin@russel.fr",
+  "password": "votre_mot_de_passe"
+}</code></pre>
+
+        <p>
+          Réponses possibles :
+          <code>200</code>, <code>400</code>, <code>401</code>
+          ou <code>500</code>.
+        </p>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-title">
+          <span class="method get">GET</span>
+          <code>/logout</code>
+        </div>
+
+        <p>Supprime le cookie JWT et déconnecte l’utilisateur.</p>
+      </div>
+    </section>
+
+    <section class="documentation-section">
+      <h2>Catways</h2>
+
+      <p>
+        Un catway contient un numéro unique, un type
+        <code>short</code> ou <code>long</code>, ainsi qu’un état.
+      </p>
+
+      <div class="endpoint-list">
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/catways</code>
+          </div>
+          <p>Récupère tous les catways.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/catways/:id</code>
+          </div>
+          <p>
+            Récupère un catway. <code>:id</code> correspond à son numéro.
+          </p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method post">POST</span>
+            <code>/catways</code>
+          </div>
+
+          <p>Crée un catway.</p>
+
+          <pre><code>{
+  "catwayNumber": 25,
+  "catwayType": "short",
+  "catwayState": "bon état"
+}</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method put">PUT</span>
+            <code>/catways/:id</code>
+          </div>
+
+          <p>Modifie uniquement l’état d’un catway.</p>
+
+          <pre><code>{
+  "catwayState": "en cours de réparation"
+}</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method delete">DELETE</span>
+            <code>/catways/:id</code>
+          </div>
+
+          <p>Supprime un catway grâce à son numéro.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="documentation-section">
+      <h2>Réservations</h2>
+
+      <p>
+        Les réservations sont des sous-ressources d’un catway.
+        <code>:idReservation</code> correspond à l’identifiant MongoDB
+        de la réservation.
+      </p>
+
+      <div class="endpoint-list">
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/catways/:id/reservations</code>
+          </div>
+
+          <p>Récupère toutes les réservations d’un catway.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/catways/:id/reservations/:idReservation</code>
+          </div>
+
+          <p>Récupère une réservation précise.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method post">POST</span>
+            <code>/catways/:id/reservations</code>
+          </div>
+
+          <p>Crée une réservation pour un catway.</p>
+
+          <pre><code>{
+  "clientName": "Thomas Martin",
+  "boatName": "Carolina",
+  "startDate": "2026-08-20T10:00:00.000Z",
+  "endDate": "2026-08-21T10:00:00.000Z"
+}</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method put">PUT</span>
+            <code>/catways/:id/reservations/:idReservation</code>
+          </div>
+
+          <p>Modifie une réservation.</p>
+
+          <pre><code>{
+  "clientName": "Thomas Martin",
+  "boatName": "Carolina",
+  "startDate": "2026-08-20T10:00:00.000Z",
+  "endDate": "2026-08-22T10:00:00.000Z"
+}</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method delete">DELETE</span>
+            <code>/catways/:id/reservations/:idReservation</code>
+          </div>
+
+          <p>Supprime une réservation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="documentation-section">
+      <h2>Utilisateurs</h2>
+
+      <p>
+        Les mots de passe doivent contenir au moins huit caractères.
+        Ils sont hachés avec bcrypt avant leur enregistrement.
+      </p>
+
+      <div class="endpoint-list">
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/users</code>
+          </div>
+
+          <p>Récupère tous les utilisateurs sans leur mot de passe.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method get">GET</span>
+            <code>/users/:email</code>
+          </div>
+
+          <p>Récupère un utilisateur grâce à son adresse email.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method post">POST</span>
+            <code>/users</code>
+          </div>
+
+          <p>Crée un utilisateur.</p>
+
+          <pre><code>{
+  "username": "Sandra",
+  "email": "admin@russel.fr",
+  "password": "mot_de_passe"
+}</code></pre>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method put">PUT</span>
+            <code>/users/:email</code>
+          </div>
+
+          <p>Modifie les informations d’un utilisateur.</p>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-title">
+            <span class="method delete">DELETE</span>
+            <code>/users/:email</code>
+          </div>
+
+          <p>Supprime un utilisateur.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="documentation-section">
+      <h2>Codes de réponse</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Signification</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><code>200</code></td>
+            <td>Requête réussie</td>
+          </tr>
+          <tr>
+            <td><code>201</code></td>
+            <td>Ressource créée</td>
+          </tr>
+          <tr>
+            <td><code>400</code></td>
+            <td>Données invalides</td>
+          </tr>
+          <tr>
+            <td><code>401</code></td>
+            <td>Authentification requise ou token invalide</td>
+          </tr>
+          <tr>
+            <td><code>404</code></td>
+            <td>Ressource introuvable</td>
+          </tr>
+          <tr>
+            <td><code>409</code></td>
+            <td>Ressource déjà existante</td>
+          </tr>
+          <tr>
+            <td><code>500</code></td>
+            <td>Erreur interne du serveur</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
